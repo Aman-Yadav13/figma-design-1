@@ -1,162 +1,161 @@
-import React, { useEffect, useRef } from "react";
-import * as d3 from "d3";
+import React, { useState } from "react";
+import { PieChart, Pie, Cell, Sector, ResponsiveContainer } from "recharts";
 
-interface DataItem {
-  name: string;
-  value: number;
-}
+const data = [
+  { name: "Industry 1", value: 18 },
+  { name: "Industry 2", value: 19 },
+  { name: "Industry 3", value: 20 },
+  { name: "Industry 4", value: 21 },
+  { name: "Industry 5", value: 22 },
+];
 
-export const DoughnutChart: React.FC = () => {
-  const width = 500;
-  const height = 500;
-  const svgRef = useRef<SVGSVGElement>(null);
+const COLORS = ["#e3c71c", "#e3c71c", "#e3c71c", "#70db67", "#70db67"];
 
-  useEffect(() => {
-    const dataset: DataItem[] = [
-      { name: "Industry 1", value: 21 },
-      { name: "Industry 5", value: 22 },
-      { name: "Industry 4", value: 23 },
-      { name: "Industry 2", value: 20 },
-      { name: "Industry 3", value: 24 },
-    ];
+const renderActiveShape = (props) => {
+  const RADIAN = Math.PI / 180;
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+  } = props;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? "start" : "end";
 
-    const mappingDataset = {
-      "Industry 1": "Up",
-      "Industry 2": "Up",
-      "Industry 3": "Down",
-      "Industry 4": "Up",
-      "Industry 5": "Up",
-    };
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill="#cccccc"
+      />
+      <text x={cx} y={cy} textAnchor="middle" fill="#000000" fontSize={14}>
+        $##,###
+      </text>
+      <text
+        x={cx}
+        y={cy}
+        dy={16}
+        textAnchor="middle"
+        fill="#000000"
+        fontSize={12}
+      >
+        ▲12%
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={55}
+        outerRadius={60}
+        fill={
+          payload.name !== "Industry 4" && payload.name !== "Industry 5"
+            ? "#ab9615"
+            : "#33ac29"
+        }
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={50}
+        outerRadius={55}
+        fill="#CBCBCE"
+      />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+        fontSize={11}
+        fontWeight={600}
+      >{`${payload.name}`}</text>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={18}
+        textAnchor={textAnchor}
+        fill="#333"
+        fontSize={11}
+        fontWeight={600}
+      >
+        {`${payload.value}%`}
+      </text>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={36}
+        textAnchor={textAnchor}
+        fontSize={11}
+        fontWeight={600}
+        fill="#333"
+      >
+        {`▲$##,###`}
+      </text>
+    </g>
+  );
+};
 
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(dataset.map((d) => d.name))
-      .range(["#f1fc72", "#f1fc72", "#f1fc72", "#70db67", "#70db67"]);
-    const colorOuter = d3
-      .scaleOrdinal<string>()
-      .domain(dataset.map((d) => d.name))
-      .range(["#a3b104", "#a3b104", "#a3b104", "#30a627", "#30a627"]);
+export const DoughnutChart = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-    const pie = d3.pie<DataItem>().value((d) => d.value ?? 0);
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
+  };
 
-    const data = pie(dataset);
-    const arc = d3
-      .arc<d3.PieArcDatum<DataItem>>()
-      .innerRadius(85)
-      .outerRadius(150)
-      .cornerRadius(0)
-      .padAngle(0.03);
-    const borderArc = d3
-      .arc<d3.PieArcDatum<DataItem>>()
-      .innerRadius(75)
-      .outerRadius(85)
-      .cornerRadius(0)
-      .padAngle(0.03);
-    const borderArc2 = d3
-      .arc<d3.PieArcDatum<DataItem>>()
-      .innerRadius(65)
-      .outerRadius(75)
-      .cornerRadius(0)
-      .padAngle(0.03);
-
-    const svg = d3.select(svgRef.current);
-
-    if (!svg.empty()) {
-      const mainG = svg
-        .append("g")
-        .attr("transform", `translate(${width / 2},${height / 2})`);
-
-      mainG
-        .selectAll(".border-path-inner")
-        .data(data)
-        .enter()
-        .append("path")
-        .attr("class", "border-path")
-        .attr("d", borderArc2)
-        .attr("fill", "#b9bbc0");
-
-      mainG
-        .selectAll(".border-path-outer")
-        .data(data)
-        .enter()
-        .append("path")
-        .attr("class", "border-path")
-        .attr("d", borderArc)
-        .attr("fill", (d) => colorOuter(d.data.name));
-
-      mainG
-        .selectAll(".arc")
-        .data(data)
-        .enter()
-        .append("path")
-        .attr("class", "arc")
-        .attr("d", arc)
-        .attr("fill", (d) => color(d.data.name))
-        .style("filter", "url(#inner-shadow)");
-
-      mainG
-        .selectAll(".arc-label")
-        .data(data)
-        .enter()
-        .append("text")
-        .attr("class", "arc-label")
-        .attr("transform", (d) => `translate(${arc.centroid(d)})`)
-        .attr("text-anchor", "middle")
-        .attr("dy", "0.35em")
-        .text((d) => d.data.value);
-
-      mainG
-        .selectAll(".name-label")
-        .data(data)
-        .enter()
-        .append("text")
-        .attr("class", "name-label")
-        .attr("transform", (d) => {
-          if (d.data.name === "Industry 5") {
-            return `translate(${-40},${150})`;
-          } else if (d.data.name === "Industry 2") {
-            return `translate(${-150},${-170})`;
-          } else if (d.data.name === "Industry 3") {
-            return `translate(${150},${-160})`;
-          } else if (d.data.name === "Industry 4") {
-            return `translate(${210},${40})`;
-          } else {
-            return `translate(${-210},${20})`;
-          }
-        })
-        .attr("text-anchor", (d) =>
-          Math.cos(
-            Math.PI + Math.atan2(arc.centroid(d)[1], arc.centroid(d)[0])
-          ) > 0
-            ? "start"
-            : "end"
-        )
-        .html((d) => {
-          return `
-        <tspan x="0" dy="1.2em" class="text-xs">${d.data.name}</tspan>
-        <tspan x="0" dy="1.2em" class="text-xs">${d.data.value}%</tspan>
-        <tspan x="0" dy="1.2em" class="text-xs">
-            ${mappingDataset[d.data.name] === "Up" ? "▲$######" : "▼$######"}
-        </tspan>`;
-        });
-
-      mainG
-        .append("text")
-        .attr("text-anchor", "middle")
-        .attr("dy", "1.5em")
-        .text("▲ 12%")
-        .style("fill", "black")
-        .style("font-size", "14px");
-
-      mainG
-        .append("text")
-        .attr("text-anchor", "middle")
-        .attr("dy", "0.35em")
-        .text("$#####")
-        .style("fill", "black")
-        .style("font-size", "20px");
-    }
-  }, []);
-
-  return <svg ref={svgRef} width={width} height={height}></svg>;
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape}
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={120}
+          paddingAngle={2}
+          dataKey="value"
+          onMouseEnter={onPieEnter}
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+    </ResponsiveContainer>
+  );
 };

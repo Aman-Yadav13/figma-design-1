@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { StackedBarChart } from "./BarChart.tsx";
 import { IoTriangleSharp } from "react-icons/io5";
 import { TableComponent } from "./TableComponent.tsx";
+import { DoughnutChart } from "./DoughnutChart.tsx";
 
 export const Dashboard = ({ openSidebar }: { openSidebar: boolean }) => {
   return (
     <>
-      <div className="h-[2000px] w-full flex">
+      <div className="h-full w-full flex">
         <div
           className={`flex-1 pl-4 mt-4 pr-4 ${
             openSidebar ? "ml-[266px]" : "ml-4"
@@ -89,35 +90,35 @@ export const Dashboard = ({ openSidebar }: { openSidebar: boolean }) => {
               <div className="mt-4 h-full overflow-hidden flex items-center justify-center relative">
                 <div className="h-full aspect-square bg-gray-50 border-2 border-white flex items-end justify-center rounded-full shadow-sm shadow-gray-200 relative">
                   <div className="absolute top-2">
-                    <img src="/svg1.svg" />
+                    <img alt="icon" src="/svg1.svg" />
                   </div>
                   <div className="h-[85%] bg-gray-100 aspect-square rounded-full flex items-end justify-center border-2 border-white relative">
                     <div className="absolute -top-2 text-[11px] font-semibold">
                       50%
                     </div>
                     <div className="absolute top-4">
-                      <img src="/svg1.svg" />
+                      <img alt="icon" src="/svg1.svg" />
                     </div>
                     <div className="h-[80%] bg-gray-50 aspect-square rounded-full flex items-end justify-center border-2 border-white relative">
                       <div className="absolute -top-2 text-[11px] font-semibold">
                         50%
                       </div>
                       <div className="absolute top-5">
-                        <img src="/svg1.svg" />
+                        <img alt="icon" src="/svg1.svg" />
                       </div>
                       <div className="h-[75%] bg-gray-100 aspect-square rounded-full flex items-end justify-center border-2 border-white relative">
                         <div className="absolute -top-2 text-[11px] font-semibold">
                           50%
                         </div>
                         <div className="absolute top-5">
-                          <img src="/svg1.svg" />
+                          <img alt="icon" src="/svg1.svg" />
                         </div>
                         <div className="h-[70%] bg-gray-50 aspect-square rounded-full flex items-end justify-center border-2 border-white relative">
                           <div className="absolute -top-2 text-[11px] font-semibold">
                             50%
                           </div>
                           <div className="absolute top-4">
-                            <img src="/svg1.svg" />
+                            <img alt="icon" src="/svg1.svg" />
                           </div>
                           <div className="h-[65%] bg-gray-100 aspect-square rounded-full flex items-end justify-center border-2 border-white relative">
                             <div className="absolute -top-2 text-[11px] font-semibold">
@@ -169,6 +170,59 @@ export const Dashboard = ({ openSidebar }: { openSidebar: boolean }) => {
                     <p className="font-bold text-sm text-green-600">12%</p>
                   </div>
                   <div className="text-md">Revenue(per month)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full mt-4 grid grid-cols-12 h-[400px] gap-6">
+            <div className="shadow-sm shadow-gray-300 bg-gray-50 py-4 px-5 rounded-xl col-span-8">
+              <div className="grid grid-cols-12 h-full w-full">
+                <div className="h-full col-span-5">
+                  <div className="grid grid-cols-4 h-full">
+                    <div className="grid col-span-3 h-full">
+                      <div className="pl-4 flex flex-col h-full justify-between">
+                        <p className="text-xl font-bold">Leads</p>
+                        <div className="flex flex-col gap-2">
+                          <div className="w-full py-4 px-4 rounded-2xl border border-gray-200 bg-gray-100 shadow-lg shadow-bg-gray-200">
+                            <p className="text-2xl font-bold">239,769</p>
+                            <p className="text-xl">Total Leads</p>
+                          </div>
+                          <div className="w-full py-4 px-4 rounded-2xl border border-gray-200 bg-gray-100 shadow-lg shadow-bg-gray-200">
+                            <p className="text-2xl font-bold">239,769</p>
+                            <p className="text-xl">Qualified Leads</p>
+                          </div>
+                          <div className="w-full py-4 px-4 rounded-2xl border border-gray-200 bg-gray-100 shadow-lg shadow-bg-gray-200">
+                            <p className="text-2xl font-bold">239,769</p>
+                            <p className="text-xl">Qualified Leads</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 h-full self-start ml-12">
+                      <div className="flex flex-col gap-2">
+                        <div className="border border-gray-300 w-fit h-fit outline bg-gray-100 outline-gray-300  outline-offset-1">
+                          <p>C1</p>
+                        </div>
+                        <div className="border border-gray-300 w-fit h-fit outline bg-gray-100 outline-gray-300  outline-offset-1">
+                          <p>C2</p>
+                        </div>
+                        <div className="border border-gray-300 w-fit h-fit outline bg-gray-100 outline-gray-300  outline-offset-1">
+                          <p>C3</p>
+                        </div>
+                        <div className="border border-gray-300 w-fit h-fit outline bg-gray-100 outline-gray-300  outline-offset-1">
+                          <p>C4</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-full bg-gray-100 w-full rounded-xl col-span-7">
+                  <div className="flex flex-col h-full w-full px-2 pb-4 pt-2">
+                    <DoughnutChart />
+                    <p className="ml-6 text-xl font-bold">
+                      Lead Distribution by industry
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -5,12 +5,20 @@ import {
   Chart as ChartJS,
   BarElement,
   CategoryScale,
+  Title,
   LinearScale,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  Title
+);
 
 export const StackedBarChart = () => {
   const data = {
@@ -46,10 +54,7 @@ export const StackedBarChart = () => {
   const options = {
     plugins: {
       legend: {
-        title: {
-          display: true,
-          text: "Pipeline",
-        },
+        display: true,
         position: "top" as const,
         align: "end" as const,
         labels: {
@@ -57,6 +62,17 @@ export const StackedBarChart = () => {
           pointStyle: "circle",
           boxHeight: 6,
           boxWidth: 6,
+        },
+      },
+      title: {
+        display: true,
+        text: "Pipeline",
+        align: "start" as const,
+        position: "top" as const,
+        color: "black",
+        font: {
+          weight: "bold" as "normal" | "bold" | "lighter" | "bolder" | number,
+          size: 16,
         },
       },
     },
